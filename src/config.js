@@ -78,4 +78,44 @@ function resolveProjectDir() {
   return null;
 }
 
-export { config, saveConfig, loadConfig, resolveProjectDir };
+/**
+ * Interactively prompt the user for a project directory, validate it, and save to config.json.
+ * Returns the resolved absolute path.
+ */
+async function promptForProjectDir() {
+  const { createInterface } = await import('readline');
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+
+  const ask = (q) => new Promise((res) => rl.question(q, res));
+
+  console.log('\n  ┌─────────────────────────────────────────┐');
+  console.log('  │          WhatsClaude Setup               │');
+  console.log('  └─────────────────────────────────────────┘\n');
+  console.log('  No project directory configured yet.');
+  console.log('  Enter the folder where Claude should work\n');
+
+  let dir = '';
+  while (!dir) {
+    const input = (await ask('  Project path: ')).trim();
+    if (!input) {
+      console.log('  ⚠  Path cannot be empty.\n');
+      continue;
+    }
+    const resolved = resolve(input);
+    if (!existsSync(resolved)) {
+      console.log(`  ⚠  Directory not found: ${resolved}\n`);
+      continue;
+    }
+    dir = resolved;
+  }
+
+  rl.close();
+
+  // Save to config.json so they never need to enter it again
+  const updated = { ...loadConfig(), projectDir: dir };
+  saveConfig(updated);
+  console.log(`\n  ✓ Saved to config.json: ${dir}\n`);
+  return dir;
+}
+
+export { config, saveConfig, loadConfig, resolveProjectDir, promptForProjectDir };

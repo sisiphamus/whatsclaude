@@ -8,20 +8,14 @@ process.on('unhandledRejection', (reason) => {
 import { execFileSync } from 'child_process';
 import { existsSync } from 'fs';
 import { startWhatsApp } from './whatsapp.js';
-import { resolveProjectDir } from './config.js';
+import { resolveProjectDir, promptForProjectDir } from './config.js';
 
 // --- Startup validation ---
 
-// 1. Check project directory
-const projectDir = resolveProjectDir();
+// 1. Check project directory — prompt interactively if not set
+let projectDir = resolveProjectDir();
 if (!projectDir) {
-  console.error('\n  ERROR: No project directory specified.\n');
-  console.error('  WhatsClaude needs to know which folder to run Claude in.\n');
-  console.error('  Option A — CLI argument:');
-  console.error('    npm start -- --project /path/to/your/project\n');
-  console.error('  Option B — config.json (create in whatsclaude root):');
-  console.error('    { "projectDir": "/path/to/your/project" }\n');
-  process.exit(1);
+  projectDir = await promptForProjectDir();
 }
 
 if (!existsSync(projectDir)) {
