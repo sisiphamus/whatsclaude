@@ -1,0 +1,19 @@
+{
+  "name": "whatsclaude",
+  "version": "1.0.0",
+  "description": "Connect WhatsApp to your Claude CLI. Send a message on WhatsApp, get a response from Claude.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch --watch-path src src/index.js"
+  },
+  "keywords": ["whatsapp", "claude", "cli", "bridge", "ai"],
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "^6.7.16",
+    "pino": "^9.0.0",
+    "qrcode": "^1.5.4"
+  }
+}

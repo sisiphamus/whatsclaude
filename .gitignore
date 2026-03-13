@@ -1,0 +1,7 @@
+node_modules/
+auth_state/
+message-queue/
+tmp/
+config.json
+*.log
+.DS_Store
