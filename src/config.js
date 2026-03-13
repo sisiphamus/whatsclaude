@@ -89,18 +89,18 @@ async function promptForProjectDir() {
   const ask = (q) => new Promise((res) => rl.question(q, res));
 
   console.log('');
-  console.log('  \x1b[36m██╗    ██╗██╗  ██╗ █████╗ ████████╗███████╗\x1b[0m');
-  console.log('  \x1b[36m██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝\x1b[0m');
-  console.log('  \x1b[36m██║ █╗ ██║███████║███████║   ██║   ███████╗\x1b[0m');
-  console.log('  \x1b[36m██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║\x1b[0m');
-  console.log('  \x1b[36m╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║\x1b[0m');
-  console.log('  \x1b[36m ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝\x1b[0m');
-  console.log('  \x1b[35m   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗\x1b[0m');
-  console.log('  \x1b[35m  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝\x1b[0m');
-  console.log('  \x1b[35m  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  \x1b[0m');
-  console.log('  \x1b[35m  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  \x1b[0m');
-  console.log('  \x1b[35m  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗\x1b[0m');
-  console.log('  \x1b[35m   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝\x1b[0m');
+  console.log('  \x1b[32m██╗    ██╗██╗  ██╗ █████╗ ████████╗███████╗\x1b[0m');
+  console.log('  \x1b[32m██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝\x1b[0m');
+  console.log('  \x1b[32m██║ █╗ ██║███████║███████║   ██║   ███████╗\x1b[0m');
+  console.log('  \x1b[32m██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║\x1b[0m');
+  console.log('  \x1b[32m╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║\x1b[0m');
+  console.log('  \x1b[32m ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝\x1b[0m');
+  console.log('  \x1b[33m   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗\x1b[0m');
+  console.log('  \x1b[33m  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝\x1b[0m');
+  console.log('  \x1b[33m  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  \x1b[0m');
+  console.log('  \x1b[33m  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  \x1b[0m');
+  console.log('  \x1b[33m  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗\x1b[0m');
+  console.log('  \x1b[33m   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝\x1b[0m');
   console.log('');
   console.log('  \x1b[33m💬 WhatsApp ↔ Claude, right from your phone\x1b[0m');
   console.log('');
@@ -110,7 +110,7 @@ async function promptForProjectDir() {
 
   let dir = '';
   while (!dir) {
-    const input = (await ask('  \x1b[36m📁 Project path:\x1b[0m ')).trim();
+    const input = (await ask('  \x1b[32m📁 Project path:\x1b[0m ')).trim();
     if (!input) {
       console.log('  \x1b[33m⚠  Path cannot be empty, try again!\x1b[0m\n');
       continue;

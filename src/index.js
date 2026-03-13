@@ -43,18 +43,18 @@ try {
 // --- Startup banner ---
 
 console.log('');
-console.log('  \x1b[36m██╗    ██╗██╗  ██╗ █████╗ ████████╗███████╗\x1b[0m');
-console.log('  \x1b[36m██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝\x1b[0m');
-console.log('  \x1b[36m██║ █╗ ██║███████║███████║   ██║   ███████╗\x1b[0m');
-console.log('  \x1b[36m██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║\x1b[0m');
-console.log('  \x1b[36m╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║\x1b[0m');
-console.log('  \x1b[36m ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝\x1b[0m');
-console.log('  \x1b[35m   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗\x1b[0m');
-console.log('  \x1b[35m  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝\x1b[0m');
-console.log('  \x1b[35m  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  \x1b[0m');
-console.log('  \x1b[35m  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  \x1b[0m');
-console.log('  \x1b[35m  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗\x1b[0m');
-console.log('  \x1b[35m   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝\x1b[0m');
+console.log('  \x1b[32m██╗    ██╗██╗  ██╗ █████╗ ████████╗███████╗\x1b[0m');
+console.log('  \x1b[32m██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝\x1b[0m');
+console.log('  \x1b[32m██║ █╗ ██║███████║███████║   ██║   ███████╗\x1b[0m');
+console.log('  \x1b[32m██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║\x1b[0m');
+console.log('  \x1b[32m╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║\x1b[0m');
+console.log('  \x1b[32m ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝\x1b[0m');
+console.log('  \x1b[33m   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗\x1b[0m');
+console.log('  \x1b[33m  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝\x1b[0m');
+console.log('  \x1b[33m  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  \x1b[0m');
+console.log('  \x1b[33m  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  \x1b[0m');
+console.log('  \x1b[33m  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗\x1b[0m');
+console.log('  \x1b[33m   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝\x1b[0m');
 console.log('');
 console.log('  \x1b[33m💬 WhatsApp ↔ Claude, right from your phone\x1b[0m');
 console.log('');
@@ -63,7 +63,7 @@ console.log(`  \x1b[2m🤖 Claude:\x1b[0m   ${claudeVersion}`);
 console.log('');
 
 try {
-  console.log('  \x1b[36m⚡ Connecting to WhatsApp...\x1b[0m\n');
+  console.log('  \x1b[32m⚡ Connecting to WhatsApp...\x1b[0m\n');
   startWhatsApp();
 } catch (err) {
   console.error('[startup] Failed:', err);
