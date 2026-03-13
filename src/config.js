@@ -22,6 +22,9 @@ const defaults = {
   maxResponseLength: 4000,
   messageTimeout: 120000,
 
+  // Group
+  groupJid: '',
+
   // Auth
   authDir: join(__dirname, '..', 'auth_state'),
 };

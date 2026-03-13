@@ -9,9 +9,9 @@ import { Boom } from '@hapi/boom';
 import pino from 'pino';
 import QRCode from 'qrcode';
 import { writeFileSync, mkdirSync, readFileSync, unlinkSync, readdirSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
-import { config } from './config.js';
+import { config, saveConfig, resolveProjectDir } from './config.js';
 import { handleMessage } from './handler.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -80,6 +80,60 @@ async function sendWithRetry(jid, content, opts, retries = 3) {
   }
 }
 
+// --- Group auto-creation ---
+
+function getGroupName() {
+  const projectDir = resolveProjectDir();
+  if (projectDir) return basename(projectDir);
+  return 'WhatsClaude';
+}
+
+async function ensureGroup(socket) {
+  // Already have a group from a previous session
+  if (config.groupJid) {
+    try {
+      // Verify the group still exists by fetching metadata
+      await socket.groupMetadata(config.groupJid);
+      console.log(`[wa] Using existing group: ${config.groupJid}`);
+
+      // Rename to match current project dir
+      const name = getGroupName();
+      await socket.groupUpdateSubject(config.groupJid, name).catch(() => {});
+      return;
+    } catch {
+      // Group no longer exists — create a new one
+      console.log('[wa] Saved group no longer exists, creating new one');
+      config.groupJid = '';
+    }
+  }
+
+  // Create a new solo group
+  const name = getGroupName();
+  try {
+    const group = await socket.groupCreate(name, []);
+    config.groupJid = group.id;
+    saveConfig(config);
+    console.log(`[wa] Created group "${name}" (${group.id})`);
+    console.log('[wa] Open this group in WhatsApp to start chatting!');
+
+    await socket.groupUpdateDescription(
+      group.id,
+      `Send messages here to chat with Claude.\nProject: ${resolveProjectDir() || 'default'}`
+    ).catch(() => {});
+
+    // Send welcome message
+    const welcome = `Claude is connected to this group.\n\nProject: ${resolveProjectDir()}\n\nSend any message and Claude will respond.`;
+    const sent = await socket.sendMessage(group.id, { text: welcome });
+    if (sent?.key?.id) {
+      botSentIds.add(sent.key.id);
+      storeMessage(sent.key.id, sent.message);
+    }
+  } catch (err) {
+    console.error('[wa] Failed to create group:', err.message);
+    console.log('[wa] You can message any chat — group filtering is disabled.');
+  }
+}
+
 // --- Main WhatsApp connection ---
 
 export async function startWhatsApp() {
@@ -118,7 +172,7 @@ export async function startWhatsApp() {
     catch (err) { console.log('[wa] Failed to save creds:', err.message); }
   });
 
-  sock.ev.on('connection.update', (update) => {
+  sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr) {
@@ -156,6 +210,9 @@ export async function startWhatsApp() {
       processingIds.clear();
       console.log('[wa] Connected!');
       console.log('[wa] Connected as:', JSON.stringify(sock.user));
+
+      // Create or verify the solo group
+      await ensureGroup(sock);
 
       // Drain any messages left in queue from a previous crash
       const pending = getPendingMessages();
@@ -208,10 +265,9 @@ export async function startWhatsApp() {
       // Store incoming messages for getMessage callback
       storeMessage(msgId, msg.message);
 
-      // Skip self-sent messages in DMs (allow in groups for self-messaging)
+      // Only process messages from the WhatsClaude group
       const remoteJid = msg.key.remoteJid;
-      const isGroup = remoteJid?.endsWith('@g.us');
-      if (msg.key.fromMe && !isGroup) continue;
+      if (config.groupJid && remoteJid !== config.groupJid) continue;
 
       // Persist to queue before processing
       enqueueMessage(msg);

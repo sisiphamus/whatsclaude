@@ -22,7 +22,8 @@ npm start -- --project /path/to/your/project
 1. A QR code will appear in your terminal
 2. Open WhatsApp on your phone → Settings → Linked Devices → Link a Device
 3. Scan the QR code
-4. Send a message to any chat — Claude will respond, working in your project directory
+4. A WhatsApp group named after your project folder is automatically created
+5. Open that group and send a message — Claude will respond, working in your project directory
 
 ## Setting the Project Directory
 
@@ -51,11 +52,14 @@ WhatsApp message → Baileys (WhatsApp Web protocol) → Claude CLI (in your pro
 ```
 
 - Uses [Baileys](https://github.com/WhiskeySockets/Baileys) to connect to WhatsApp Web
+- On first connect, creates a WhatsApp group named after your project folder (e.g., `my-app`)
+- Only messages in that group trigger Claude — your other chats are untouched
 - Incoming messages are piped to your local `claude --print` command
 - Claude runs in your specified project directory, so it has full context of your codebase
 - Claude's response is sent back as a WhatsApp reply
 - Images are downloaded and passed to Claude for analysis
 - Messages are queued to survive crashes
+- If you change `--project`, the group is automatically renamed to match
 
 ## Configuration
 
