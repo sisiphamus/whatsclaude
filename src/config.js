@@ -95,14 +95,14 @@ async function promptForProjectDir() {
   console.log('  \x1b[32m██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║\x1b[0m');
   console.log('  \x1b[32m╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║\x1b[0m');
   console.log('  \x1b[32m ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝\x1b[0m');
-  console.log('  \x1b[33m   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗\x1b[0m');
-  console.log('  \x1b[33m  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝\x1b[0m');
-  console.log('  \x1b[33m  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  \x1b[0m');
-  console.log('  \x1b[33m  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  \x1b[0m');
-  console.log('  \x1b[33m  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗\x1b[0m');
-  console.log('  \x1b[33m   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝\x1b[0m');
+  console.log('  \x1b[38;5;208m   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗\x1b[0m');
+  console.log('  \x1b[38;5;208m  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝\x1b[0m');
+  console.log('  \x1b[38;5;208m  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  \x1b[0m');
+  console.log('  \x1b[38;5;208m  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  \x1b[0m');
+  console.log('  \x1b[38;5;208m  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗\x1b[0m');
+  console.log('  \x1b[38;5;208m   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝\x1b[0m');
   console.log('');
-  console.log('  \x1b[33m💬 WhatsApp ↔ Claude, right from your phone\x1b[0m');
+  console.log('  \x1b[38;5;208m💬 WhatsApp ↔ Claude, right from your phone\x1b[0m');
   console.log('');
   console.log('  \x1b[2mNo project directory configured yet.\x1b[0m');
   console.log('  \x1b[2mTell me where your project lives and I\'ll remember it!\x1b[0m');
@@ -112,7 +112,7 @@ async function promptForProjectDir() {
   while (!dir) {
     const input = (await ask('  \x1b[32m📁 Project path:\x1b[0m ')).trim();
     if (!input) {
-      console.log('  \x1b[33m⚠  Path cannot be empty, try again!\x1b[0m\n');
+      console.log('  \x1b[38;5;208m⚠  Path cannot be empty, try again!\x1b[0m\n');
       continue;
     }
     const resolved = resolve(input);
