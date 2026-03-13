@@ -88,22 +88,36 @@ async function promptForProjectDir() {
 
   const ask = (q) => new Promise((res) => rl.question(q, res));
 
-  console.log('\n  ┌─────────────────────────────────────────┐');
-  console.log('  │          WhatsClaude Setup               │');
-  console.log('  └─────────────────────────────────────────┘\n');
-  console.log('  No project directory configured yet.');
-  console.log('  Enter the folder where Claude should work\n');
+  console.log('');
+  console.log('  \x1b[36m██╗    ██╗██╗  ██╗ █████╗ ████████╗███████╗\x1b[0m');
+  console.log('  \x1b[36m██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝\x1b[0m');
+  console.log('  \x1b[36m██║ █╗ ██║███████║███████║   ██║   ███████╗\x1b[0m');
+  console.log('  \x1b[36m██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║\x1b[0m');
+  console.log('  \x1b[36m╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║\x1b[0m');
+  console.log('  \x1b[36m ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝\x1b[0m');
+  console.log('  \x1b[35m   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗\x1b[0m');
+  console.log('  \x1b[35m  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝\x1b[0m');
+  console.log('  \x1b[35m  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  \x1b[0m');
+  console.log('  \x1b[35m  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  \x1b[0m');
+  console.log('  \x1b[35m  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗\x1b[0m');
+  console.log('  \x1b[35m   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝\x1b[0m');
+  console.log('');
+  console.log('  \x1b[33m💬 WhatsApp ↔ Claude, right from your phone\x1b[0m');
+  console.log('');
+  console.log('  \x1b[2mNo project directory configured yet.\x1b[0m');
+  console.log('  \x1b[2mTell me where your project lives and I\'ll remember it!\x1b[0m');
+  console.log('');
 
   let dir = '';
   while (!dir) {
-    const input = (await ask('  Project path: ')).trim();
+    const input = (await ask('  \x1b[36m📁 Project path:\x1b[0m ')).trim();
     if (!input) {
-      console.log('  ⚠  Path cannot be empty.\n');
+      console.log('  \x1b[33m⚠  Path cannot be empty, try again!\x1b[0m\n');
       continue;
     }
     const resolved = resolve(input);
     if (!existsSync(resolved)) {
-      console.log(`  ⚠  Directory not found: ${resolved}\n`);
+      console.log(`  \x1b[31m✗  Directory not found: ${resolved}\x1b[0m\n`);
       continue;
     }
     dir = resolved;
@@ -114,7 +128,10 @@ async function promptForProjectDir() {
   // Save to config.json so they never need to enter it again
   const updated = { ...loadConfig(), projectDir: dir };
   saveConfig(updated);
-  console.log(`\n  ✓ Saved to config.json: ${dir}\n`);
+  console.log('');
+  console.log(`  \x1b[32m✨ Saved! Claude will work in:\x1b[0m`);
+  console.log(`  \x1b[32m   ${dir}\x1b[0m`);
+  console.log('');
   return dir;
 }
 

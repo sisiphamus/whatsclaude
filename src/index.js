@@ -42,15 +42,28 @@ try {
 
 // --- Startup banner ---
 
-console.log('\n  WhatsClaude');
-console.log('  WhatsApp <-> Claude CLI Bridge');
-console.log('  ────────────────────────────────');
-console.log(`  Project:  ${projectDir}`);
-console.log(`  Claude:   ${claudeVersion}`);
-console.log('  ────────────────────────────────\n');
+console.log('');
+console.log('  \x1b[36m██╗    ██╗██╗  ██╗ █████╗ ████████╗███████╗\x1b[0m');
+console.log('  \x1b[36m██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝\x1b[0m');
+console.log('  \x1b[36m██║ █╗ ██║███████║███████║   ██║   ███████╗\x1b[0m');
+console.log('  \x1b[36m██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║\x1b[0m');
+console.log('  \x1b[36m╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║\x1b[0m');
+console.log('  \x1b[36m ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝\x1b[0m');
+console.log('  \x1b[35m   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗\x1b[0m');
+console.log('  \x1b[35m  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝\x1b[0m');
+console.log('  \x1b[35m  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  \x1b[0m');
+console.log('  \x1b[35m  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  \x1b[0m');
+console.log('  \x1b[35m  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗\x1b[0m');
+console.log('  \x1b[35m   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝\x1b[0m');
+console.log('');
+console.log('  \x1b[33m💬 WhatsApp ↔ Claude, right from your phone\x1b[0m');
+console.log('');
+console.log(`  \x1b[2m📂 Project:\x1b[0m  ${projectDir}`);
+console.log(`  \x1b[2m🤖 Claude:\x1b[0m   ${claudeVersion}`);
+console.log('');
 
 try {
-  console.log('  Starting WhatsApp connection...\n');
+  console.log('  \x1b[36m⚡ Connecting to WhatsApp...\x1b[0m\n');
   startWhatsApp();
 } catch (err) {
   console.error('[startup] Failed:', err);
