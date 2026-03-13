@@ -11,9 +11,14 @@ export async function executeClaudePrompt(prompt) {
   const projectDir = resolveProjectDir();
 
   return new Promise((resolve, reject) => {
+    // Clean env: remove CLAUDECODE to avoid "nested session" error if WhatsClaude
+    // was started from within a Claude Code terminal
+    const env = { ...process.env };
+    delete env.CLAUDECODE;
+
     const proc = spawn(cmd, args, {
       cwd: projectDir || process.cwd(),
-      env: { ...process.env },
+      env,
       stdio: ['pipe', 'pipe', 'pipe'],
       shell: process.platform === 'win32',
     });
