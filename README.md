@@ -1,69 +1,79 @@
 # WhatsClaude
 
-Connect your WhatsApp to Claude CLI. Send a WhatsApp message, get a response from Claude — as if you typed it in your terminal.
+Send a WhatsApp message, get a response from Claude. It runs on your machine, uses your Claude CLI, and works in whatever project directory you point it at.
 
-## Prerequisites
+## What you need
 
-- **Node.js** 18+
-- **Claude CLI** installed and authenticated (`npm install -g @anthropic-ai/claude-code`, then run `claude` once to authenticate)
+- **Node.js** 18 or newer
+- **Claude CLI** installed and logged in. If you haven't done this yet:
+  ```bash
+  npm install -g @anthropic-ai/claude-code
+  claude  # run once to authenticate
+  ```
 - **WhatsApp** on your phone
 
-## Quick Start
+## Setup
 
 ```bash
 git clone https://github.com/sisiphamus/whatsclaude.git
 cd whatsclaude
 npm install
-
-# Tell WhatsClaude which project directory Claude should work in:
 npm start -- --project /path/to/your/project
 ```
 
-1. A QR code will appear in your terminal
-2. Open WhatsApp on your phone → Settings → Linked Devices → Link a Device
-3. Scan the QR code
-4. A WhatsApp group named after your project folder is automatically created
-5. Open that group and send a message — Claude will respond, working in your project directory
+That `--project` flag is how you tell Claude which folder to work in. If you're working on a React app at `~/Code/my-app`, use that path. Claude will have full context of that codebase when responding.
 
-## Setting the Project Directory
+## What happens next
 
-WhatsClaude needs to know which folder Claude should operate in. This is the repo or directory where Claude will read/write files.
+1. A QR code shows up in your terminal
+2. On your phone: WhatsApp → Settings → Linked Devices → Link a Device → scan it
+3. WhatsClaude creates a WhatsApp group named after your project folder (so if your project is `my-app`, the group is called "my-app")
+4. Open that group on your phone and send a message
+5. Claude responds right there in the chat
 
-**Option A — CLI argument** (recommended for quick use):
+Only messages in that group go to Claude. Your other conversations are left alone.
+
+## How it actually works
+
+```
+You send a WhatsApp message
+    → Baileys (WhatsApp Web library) picks it up
+    → Your message gets piped to `claude --print` running in your project directory
+    → Claude's response comes back
+    → Gets sent as a WhatsApp reply
+```
+
+Baileys is the library that connects to WhatsApp Web. It's the same protocol the WhatsApp desktop app uses. You're linking a device to your account, same as you would with WhatsApp Web on a browser.
+
+Images work too. Send a photo and Claude will analyze it.
+
+If the server crashes mid-message, the message is queued to disk and retried when you restart.
+
+## Picking the project directory
+
+You need to tell WhatsClaude where Claude should run. Two ways:
+
+**Pass it as a flag** (good for switching between projects):
 ```bash
 npm start -- --project ~/Code/my-app
 ```
 
-**Option B — config.json** (persistent):
+**Put it in config.json** (good if you always use the same project):
 ```json
 {
   "projectDir": "/home/user/Code/my-app"
 }
 ```
 
-Save as `config.json` in the whatsclaude root, then just run `npm start`.
+Save that file in the whatsclaude root directory. Then you can just run `npm start`.
 
-The CLI argument takes priority over config.json if both are set.
+The flag wins if you set both.
 
-## How It Works
-
-```
-WhatsApp message → Baileys (WhatsApp Web protocol) → Claude CLI (in your project dir) → Response → WhatsApp reply
-```
-
-- Uses [Baileys](https://github.com/WhiskeySockets/Baileys) to connect to WhatsApp Web
-- On first connect, creates a WhatsApp group named after your project folder (e.g., `my-app`)
-- Only messages in that group trigger Claude — your other chats are untouched
-- Incoming messages are piped to your local `claude --print` command
-- Claude runs in your specified project directory, so it has full context of your codebase
-- Claude's response is sent back as a WhatsApp reply
-- Images are downloaded and passed to Claude for analysis
-- Messages are queued to survive crashes
-- If you change `--project`, the group is automatically renamed to match
+If you change the project directory, the WhatsApp group renames itself to match.
 
 ## Configuration
 
-Create a `config.json` in the project root to customize:
+Create a `config.json` in the project root if you want to change anything:
 
 ```json
 {
@@ -79,26 +89,40 @@ Create a `config.json` in the project root to customize:
 }
 ```
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `projectDir` | `""` | **Required.** Directory where Claude CLI runs (your project repo) |
-| `claudeCommand` | `"claude"` | Path to Claude CLI binary |
-| `claudeArgs` | `["--print"]` | Arguments passed to Claude CLI |
-| `allowAllNumbers` | `true` | Accept messages from anyone |
-| `allowedNumbers` | `[]` | Whitelist of phone numbers (if `allowAllNumbers` is false) |
-| `prefix` | `""` | Required prefix for messages (e.g., `"!claude "`) |
-| `rateLimitPerMinute` | `10` | Max messages per minute per sender |
-| `maxResponseLength` | `4000` | Max chars per WhatsApp message chunk |
-| `messageTimeout` | `120000` | Claude CLI timeout in ms |
+Most of these you can leave alone. The ones worth knowing about:
 
-## Re-authenticating
+- **projectDir** -- where Claude runs. Required.
+- **prefix** -- if you set this to something like `"!claude "`, only messages starting with that prefix will trigger Claude. Useful if other people are in the group and you don't want every message going to Claude.
+- **allowedNumbers** -- phone number whitelist. Only matters if you set `allowAllNumbers` to `false`.
+- **messageTimeout** -- how long to wait for Claude before giving up, in milliseconds. Default is 2 minutes.
 
-If you get logged out, delete the `auth_state/` folder and restart:
+## If you get logged out
+
+Delete the `auth_state/` folder and start over:
 
 ```bash
 rm -rf auth_state/
 npm start -- --project /path/to/your/project
 ```
+
+You'll get a new QR code to scan.
+
+## Architecture
+
+If you want to poke around the code:
+
+```
+src/
+  index.js      -- entry point, validates setup, starts everything
+  whatsapp.js   -- Baileys connection, QR auth, group creation, message routing
+  handler.js    -- extracts text/images from messages, rate limiting, calls Claude
+  claude.js     -- spawns `claude --print` as a subprocess, returns the output
+  config.js     -- loads config.json, parses CLI args
+```
+
+`whatsapp.js` receives messages from Baileys, hands them to `handler.js`, which calls `claude.js`, and the response goes back through `whatsapp.js` to WhatsApp. Not much to it.
+
+Messages are deduplicated by timestamp and ID (Baileys sometimes fires the same message twice). Bot-sent message IDs are tracked to prevent infinite loops. There's a message queue on disk so nothing gets lost if the process dies mid-response.
 
 ## License
 
