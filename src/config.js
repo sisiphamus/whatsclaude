@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync, renameSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { randomBytes } from 'crypto';
 
@@ -7,6 +7,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const CONFIG_PATH = join(__dirname, '..', 'config.json');
 
 const defaults = {
+  // Project directory — where Claude CLI runs (the repo you want Claude to work in)
+  projectDir: '',
+
   // Claude CLI settings
   claudeCommand: 'claude',
   claudeArgs: ['--print'],
@@ -45,4 +48,31 @@ function saveConfig(cfg) {
 
 const config = loadConfig();
 
-export { config, saveConfig, loadConfig };
+/**
+ * Parse --project CLI argument. Supports:
+ *   npm start -- --project /path/to/dir
+ *   node src/index.js --project /path/to/dir
+ */
+function parseProjectDirArg() {
+  const args = process.argv.slice(2);
+  const idx = args.indexOf('--project');
+  if (idx !== -1 && args[idx + 1]) {
+    return args[idx + 1];
+  }
+  return null;
+}
+
+/**
+ * Resolve the project directory. Priority:
+ * 1. --project CLI arg
+ * 2. config.json projectDir
+ * 3. null (not set)
+ */
+function resolveProjectDir() {
+  const cliDir = parseProjectDirArg();
+  if (cliDir) return resolve(cliDir);
+  if (config.projectDir) return resolve(config.projectDir);
+  return null;
+}
+
+export { config, saveConfig, loadConfig, resolveProjectDir };

@@ -5,10 +5,54 @@ process.on('unhandledRejection', (reason) => {
   console.error('[FATAL] Unhandled rejection:', reason);
 });
 
+import { execFileSync } from 'child_process';
+import { existsSync } from 'fs';
 import { startWhatsApp } from './whatsapp.js';
+import { resolveProjectDir } from './config.js';
+
+// --- Startup validation ---
+
+// 1. Check project directory
+const projectDir = resolveProjectDir();
+if (!projectDir) {
+  console.error('\n  ERROR: No project directory specified.\n');
+  console.error('  WhatsClaude needs to know which folder to run Claude in.\n');
+  console.error('  Option A — CLI argument:');
+  console.error('    npm start -- --project /path/to/your/project\n');
+  console.error('  Option B — config.json (create in whatsclaude root):');
+  console.error('    { "projectDir": "/path/to/your/project" }\n');
+  process.exit(1);
+}
+
+if (!existsSync(projectDir)) {
+  console.error(`\n  ERROR: Project directory does not exist: ${projectDir}\n`);
+  process.exit(1);
+}
+
+// 2. Check Claude CLI is available
+let claudeVersion = 'unknown';
+try {
+  claudeVersion = execFileSync('claude', ['--version'], {
+    shell: true,
+    timeout: 10000,
+    encoding: 'utf-8',
+  }).trim();
+} catch (err) {
+  console.error('\n  ERROR: Claude CLI not found.\n');
+  console.error('  Install it with:');
+  console.error('    npm install -g @anthropic-ai/claude-code\n');
+  console.error('  Then authenticate by running:');
+  console.error('    claude\n');
+  process.exit(1);
+}
+
+// --- Startup banner ---
 
 console.log('\n  WhatsClaude');
 console.log('  WhatsApp <-> Claude CLI Bridge');
+console.log('  ────────────────────────────────');
+console.log(`  Project:  ${projectDir}`);
+console.log(`  Claude:   ${claudeVersion}`);
 console.log('  ────────────────────────────────\n');
 
 try {

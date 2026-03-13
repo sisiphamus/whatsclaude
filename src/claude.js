@@ -1,17 +1,18 @@
 import { spawn } from 'child_process';
-import { config } from './config.js';
+import { config, resolveProjectDir } from './config.js';
 
 /**
  * Execute a prompt via the Claude CLI.
- * Spawns `claude --print "<prompt>"` and returns the text response.
+ * Spawns `claude --print` with the prompt on stdin, running in the configured project directory.
  */
 export async function executeClaudePrompt(prompt) {
   const cmd = config.claudeCommand || 'claude';
   const args = [...(config.claudeArgs || ['--print'])];
+  const projectDir = resolveProjectDir();
 
   return new Promise((resolve, reject) => {
     const proc = spawn(cmd, args, {
-      cwd: process.cwd(),
+      cwd: projectDir || process.cwd(),
       env: { ...process.env },
       stdio: ['pipe', 'pipe', 'pipe'],
       shell: process.platform === 'win32',

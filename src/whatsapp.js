@@ -228,7 +228,12 @@ export async function startWhatsApp() {
         try {
           const result = await handleMessage(msg);
 
-          if (!result || !result.response) {
+          // null = message was filtered (not allowed, no text, etc.) — skip silently
+          if (result === null) {
+            return;
+          }
+
+          if (!result.response) {
             try {
               const sent = await sendWithRetry(jid, {
                 text: 'Something went wrong \u2014 I didn\'t get a response. Try again?',
